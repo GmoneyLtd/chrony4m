@@ -69,6 +69,8 @@ done
 {
   echo
   echo "driftfile /var/lib/chrony/chrony.drift"
+  echo "logdir /var/log/chrony"
+  echo "log measurements statistics tracking"
   echo "makestep 0.1 3"
   if [ "${NOCLIENTLOG:-false}" = true ]; then
     echo "noclientlog"
