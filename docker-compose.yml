@@ -1,16 +1,20 @@
 version: '3.9'
 
 services:
-  ntp:
-    build: .
-    image: cturra/ntp:latest
-    container_name: ntp
+  chrony4m:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: chrony4m:1.1.0
+    container_name: chrony4m
+    hostname: chrony4m
     restart: always
     ports:
       - 123:123/udp
     environment:
-      - NTP_SERVERS=time.cloudflare.com
+      - NTP_SERVERS=127.127.1.1
       - LOG_LEVEL=0
-#      - TZ=America/Vancouver
+      - TZ=Asia/Shanghai
+      - FAKETIME=@2024-11-01 00:00:00
 #      - NOCLIENTLOG=true
 #      - ENABLE_NTS=true

@@ -1,22 +1,30 @@
+# 使用最新版本的 Alpine 作为基础镜像
 FROM alpine:latest
 
+# 构建参数
 ARG BUILD_DATE
 
-# first, a bit about this container
-LABEL build_info="cturra/docker-ntp build-date:- ${BUILD_DATE}"
-LABEL maintainer="Chris Turra <cturra@gmail.com>"
-LABEL documentation="https://github.com/cturra/docker-ntp"
+# 关于这个容器的一些信息
+LABEL build_info="chrony4m build-date:- ${BUILD_DATE}"
+LABEL maintainer="apuer <apuer911@gmail.com>"
 
-# install chrony
-RUN apk add --no-cache chrony tzdata
+# 更新软件包列表，安装 chrony 和 libfaketime
+RUN echo apk update && \
+    apk add --no-cache chrony tzdata libfaketime && \
+    rm -rf /var/cache/apk/*
 
-# script to configure/startup chrony (ntp)
+# 设置环境变量以使用 libfaketime
+ENV LD_PRELOAD="/usr/lib/faketime/libfaketime.so.1"
+ENV FAKETIME="@2024-11-01 00:00:00"
+
+# 复制启动脚本到容器中
 COPY assets/startup.sh /opt/startup.sh
+RUN chmod +x /opt/startup.sh
 
-# ntp port
+# NTP 端口
 EXPOSE 123/udp
 
-# let docker know how to test container health
+# 设置健康检查
 HEALTHCHECK CMD chronyc -n tracking || exit 1
 
 # start chronyd in the foreground
