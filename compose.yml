@@ -11,6 +11,8 @@ services:
     restart: always
     ports:
       - 123:123/udp
+    networks:
+      - helloworld
     environment:
       - NTP_SERVERS=127.127.1.1
       - LOG_LEVEL=0
@@ -18,3 +20,8 @@ services:
       - FAKETIME=@2024-11-01 00:00:00
 #      - NOCLIENTLOG=true
 #      - ENABLE_NTS=true
+
+networks:
+  helloworld:
+    external: true
+    name: play
